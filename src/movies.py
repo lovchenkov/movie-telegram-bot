@@ -16,8 +16,10 @@ class Person(object):
 class Movie(object):
     def __init__(self, movie: str):
         try:
-            self.id = requests.get(API_LINK + "SearchTitle/" + API + movie).json()["results"][0]["id"]
-            self.data = requests.get(API_LINK + "FullCast/" + API + self.id).json()     ### need to fix if this film doesn't exist
+            req_data = requests.get(API_LINK + "SearchTitle/" + API + movie).json()["results"][0]
+            self.id = req_data["id"]
+            self.picture_link = req_data["image"]
+            self.data = requests.get(API_LINK + "FullCast/" + API + self.id).json()
         except Exception:
             raise NameError
 
@@ -48,6 +50,9 @@ class Movie(object):
         if len(results["items"]) == 0:
             raise SyntaxError
         return results["items"][0], results["items"][-1]
+
+    def get_picture_link(self) -> str:
+        return self.picture_link
 
 
 def find_common_actors(movie1: str, movie2: str) -> list:

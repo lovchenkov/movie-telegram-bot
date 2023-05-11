@@ -1,6 +1,7 @@
 import telebot
 from telebot import types
 from movies import *
+import urllib
 bot = telebot.TeleBot('6261255874:AAHEyyDrVPiSlb7KCfl8-nI_aAXFUKbXDYE')
 
 
@@ -84,6 +85,17 @@ def display_movie(message):
             if actor_counter >= MAX_ACTORS_NUM:
                 break
         output_message += "...\n"
+
+        """sending picture of movie"""
+        url = movie.get_picture_link()
+        f = open('../dist/out.jpg', 'wb')
+        f.write(urllib.request.urlopen(url).read())
+        f.close()
+        bot.send_chat_action(message.from_user.id, 'upload_photo')
+        img = open('../dist/out.jpg', 'rb')
+        bot.send_photo(message.from_user.id, img)
+        img.close()
+
     bot.send_message(message.from_user.id, output_message)
 
 
